@@ -1,53 +1,64 @@
 // src/AchatBillet.js
-import React, { useState } from 'react';
+import React, { useState } from "react";
 
 function AchatBillet({ onAchatSubmit }) {
-  const [duree, setDuree] = useState('');
-  const [prix, setPrix] = useState('');
+  const [dureeVol, setDureeVol] = useState("");
+  const [prixEur, setPrixEur] = useState("");
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (duree > 0 && prix > 0) {
-      onAchatSubmit({
-        id: `Billet-${Date.now()}`, // Ajout d'un ID unique basé sur le timestamp
-        duree: parseInt(duree, 10),
-        prix: parseFloat(prix),
-      });
-    } else {
-      alert('Veuillez entrer une durée et un prix valides.');
+
+    // Convertir en nombre
+    const dureeVolNum = Number(dureeVol);
+    const prixEurNum = Number(prixEur);
+
+    // Vérifier que les valeurs sont valides
+    if (dureeVolNum <= 0 || prixEurNum <= 0) {
+      alert("Veuillez saisir une durée et un prix valides !");
+      return;
     }
+
+    // Appeler le parent avec les données converties
+    onAchatSubmit({
+      dureeVol: dureeVolNum,
+      prixEur: prixEurNum,
+    });
+
+    // Réinitialiser le formulaire
+    setDureeVol("");
+    setPrixEur("");
   };
 
   return (
-    <div className="card">
-      <h2>Étape 1 : Acheter votre billet</h2>
-      <p>
-        Souscrivez à l'assurance : si le retard de votre vol dépasse sa durée
-        initiale, vous êtes remboursé à 50%.
-      </p>
+    <div className="achat-billet">
+      <h2>Achat d'un billet avec assurance retard</h2>
       <form onSubmit={handleSubmit}>
         <div className="form-group">
-          <label>Durée du vol (en heures) :</label>
+          <label>Durée du vol (heures) :</label>
           <input
             type="number"
-            value={duree}
-            onChange={(e) => setDuree(e.target.value)}
-            placeholder="Ex: 3"
+            min="0"
+            step="0.1"
+            value={dureeVol}
+            onChange={(e) => setDureeVol(e.target.value)}
             required
           />
         </div>
+
         <div className="form-group">
-          <label>Prix du billet (en €) :</label>
+          <label>Prix du billet (EUR) :</label>
           <input
             type="number"
-            value={prix}
-            onChange={(e) => setPrix(e.target.value)}
-            placeholder="Ex: 450"
+            min="0"
+            step="0.01"
+            value={prixEur}
+            onChange={(e) => setPrixEur(e.target.value)}
             required
           />
         </div>
-        <button type="submit" className="btn-primary">
-          Souscrire et Payer
+
+        <button type="submit" className="btn">
+          Souscrire l'assurance
         </button>
       </form>
     </div>
